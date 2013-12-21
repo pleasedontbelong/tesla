@@ -9,9 +9,16 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+from os.path import dirname, join, realpath
+from sys import path
 
+ROOT = realpath(join(dirname(__file__), '..'))
+BASE_PATH = realpath(join(ROOT, '..'))
+
+path[0:0] = [
+    join(ROOT, 'apps'),
+    join(ROOT, 'core'),
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -36,7 +43,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south'
+    'django_extensions',
+    'south',
+    'base'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -51,17 +60,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'tesla.urls'
 
 WSGI_APPLICATION = 'tesla.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
