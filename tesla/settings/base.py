@@ -31,7 +31,12 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -44,8 +49,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'pipeline',
+    'rest_framework',
     'south',
-    'base'
+    'messages',
+    'base',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,6 +63,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
 )
 
 ROOT_URLCONF = 'tesla.urls'
@@ -75,7 +85,40 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
+MEDIA_ROOT = join(BASE_PATH, 'media')
+MEDIA_URL = '/media/'
 
+STATIC_ROOT = join(BASE_PATH, 'static')
 STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+PIPELINE_CSS = {
+    'main-css': {
+        'source_filenames': (
+            'css/main.css',
+        ),
+        'output_filename': 'css/main.min.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    }
+}
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

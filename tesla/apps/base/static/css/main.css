@@ -1,0 +1,61 @@
+body{
+	color: #333;
+	font-family: Verdana, 'Trebuchet MS', sans-serif;
+	font-size: 1em;
+	line-height: 1.2em;
+	letter-spacing: 0;
+	text-align: left;
+	word-spacing: normal;
+	text-decoration: none;
+	background-color: #e0e0e0;
+}
+
+h1{
+	text-transform: uppercase;
+	text-align: center;
+	line-height: 1.2em;
+}
+
+#container{
+	width: 500px;
+	margin: auto;
+}
+
+#chat-content{
+	background-color: #fff;
+	border: 1px solid #ccc;
+	width: 500px;
+	margin: auto;
+	height: 300px;
+	overflow-y: auto;
+}
+
+form{
+	width:100%;
+	margin-top: 20px;
+	height: 58px;
+	margin-bottom: 20px;
+}
+
+textarea{
+	float: left;
+	width: 80%;
+	height:50px;
+	margin-right: 2%;
+	border: 1px solid #999;
+}
+
+input{
+	float: left;
+	height: 56px;
+	width: 16%;
+	margin: 0;
+}
+
+#log{
+	display: none;
+	color: #666;
+}
+.loader{
+	margin-right: 6px;
+}
