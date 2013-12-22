@@ -84,9 +84,6 @@ form.message input{
 	display: none;
 	color: #666;
 }
-.loader{
-	margin-right: 6px;
-}
 
 /* message */
 .from{

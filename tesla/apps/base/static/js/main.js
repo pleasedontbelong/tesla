@@ -42,13 +42,16 @@ $(function() {
         }
     });
 
-
+    /* Chat Class */
     var Chat = (function () {
         function Chat(user) {
             this.user = user;
-            this.interval = setInterval(this.getMessages.bind(this), 10000);
             this.last_seen_id = "";
             this.chart_content = $('#chat-content')[0];
+            
+            this.getMessages();
+            this.interval = setInterval(this.getMessages.bind(this), 5000);
+            
             $('form.message').on('submit', function( event ) {
                 event.preventDefault();
                 this.sendMessage();
@@ -63,7 +66,10 @@ $(function() {
         }
         Chat.prototype.getMessages = function () {
             $.ajax({
-                url: "/api/messages/list/" + this.user + "/" + this.last_seen_id
+                url: "/api/messages/list/" + this.user + "/" + this.last_seen_id,
+                cache: false,
+                beforeSend: function(){this.showLog("Buscando nuevos mensajes...");}.bind(this),
+                complete: this._clearLog
             }).done(this.processMessages.bind(this)).fail(this.showError.bind(this));
         };
         Chat.prototype.sendMessage = function () {
@@ -78,7 +84,9 @@ $(function() {
                 $.ajax({
                     type: "POST",
                     url: "/api/messages/create",
-                    data: message
+                    data: message,
+                    beforeSend: function(){this.showLog("Enviando mensaje...");}.bind(this),
+                    complete: this._clearLog
                 }).done(function(response){
                     this.addMessage(response);
                     $('form.message textarea').val('');
@@ -113,12 +121,22 @@ $(function() {
             if(is_external){
                 this.last_seen_id = data.id;
             }
-            
+        };
+
+        Chat.prototype._clearLog = function (xhr, status) {
+            if(status != "error"){
+                $("#log").html("").css('display', 'none');
+            }
+        };
+
+        Chat.prototype.showLog = function (message) {
+            $("#log").html("").css('display', 'block');
+            $("#log").html(message);
         };
 
         Chat.prototype.showError = function () {
-            console.log("showError");
-            console.log(arguments);
+            $("#log").html("").css('display', 'block');
+            $("#log").html("Errooooooooooor");
         };
 
         return Chat;
