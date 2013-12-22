@@ -101,12 +101,24 @@ PIPELINE_CSS = {
         'source_filenames': (
             'css/main.css',
         ),
-        'output_filename': 'css/main.min.css',
+        'output_filename': 'compress/css/main.min.css',
         'extra_context': {
             'media': 'screen,projection',
         },
     }
 }
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
+
+PIPELINE_JS = {
+    'main-js': {
+        'source_filenames': (
+            'js/main.js',
+        ),
+        'output_filename': 'compress/js/main.min.js',
+    },
+}
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
+
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 

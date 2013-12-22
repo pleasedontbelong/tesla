@@ -14,10 +14,10 @@ class MessagesView(SerializedResponse, generics.ListAPIView):
     serializer_class = MessageSerializer
     permission_classes = (IsAuthenticated, )
 
-    def list(self, request, last_seen_id):
+    def list(self, request, user, last_seen_id):
         if last_seen_id:
-            messages = Message.objects.filter(pk__gt=last_seen_id)
+            messages = Message.objects.filter(pk__gt=last_seen_id).exclude(user=user)
         else:
-            messages = Message.objects.all()
+            messages = Message.objects.exclude(user=user)
         return self.get_list_response(messages,
                                       MessageSerializer)

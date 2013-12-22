@@ -16,36 +16,64 @@ h1{
 	line-height: 1.2em;
 }
 
-#container{
+/* login */
+#login label{
+	display: block;
+	font-weight: bold;
+}
+#login .name{
+	display: block;
+	border: 1px solid #999;
+	font-size: 14px;
+	padding: 5px;
+	margin: 10px 0;
+}
+
+#login .btn{
+	padding: 5px 30px;
+}
+
+/* Chat structure */
+#container, #login{
 	width: 500px;
 	margin: auto;
 }
+#container{
+	display: none;
+}
 
 #chat-content{
+	padding: 10px;
 	background-color: #fff;
 	border: 1px solid #ccc;
-	width: 500px;
+	width: 480px;
 	margin: auto;
 	height: 300px;
 	overflow-y: auto;
 }
 
-form{
+form.message{
 	width:100%;
 	margin-top: 20px;
 	height: 58px;
 	margin-bottom: 20px;
 }
 
-textarea{
+form.message textarea{
 	float: left;
 	width: 80%;
 	height:50px;
 	margin-right: 2%;
 	border: 1px solid #999;
+	overflow: hidden;
+	outline: none;
+	resize: none;
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+	-outline-offset: -2px;
 }
 
-input{
+form.message input{
 	float: left;
 	height: 56px;
 	width: 16%;
@@ -58,4 +86,31 @@ input{
 }
 .loader{
 	margin-right: 6px;
+}
+
+/* message */
+.from{
+	font-weight: bold;
+	font-size: 11px;
+}
+p{
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.1em;
+}
+.date{
+	font-size: 10px;
+	color: #666;
+	font-style: italic;
+}
+
+.message{
+	margin-bottom: 5px;
+}
+
+.other .from{
+	color: #33CCFF;
+}
+.me .from{
+	color: #F5B800;
 }
