@@ -48,6 +48,9 @@ $(function() {
             this.user = user;
             this.last_seen_id = "";
             this.chart_content = $('#chat-content')[0];
+
+            // status
+            this.is_sending = false;
             
             this.getMessages();
             this.interval = setInterval(this.getMessages.bind(this), 5000);
@@ -65,12 +68,22 @@ $(function() {
             }.bind(this));
         }
         Chat.prototype.getMessages = function () {
-            $.ajax({
-                url: "/api/messages/list/" + this.user + "/" + this.last_seen_id,
-                cache: false,
-                beforeSend: function(){this.showLog("Buscando nuevos mensajes...");}.bind(this),
-                complete: this._clearLog
-            }).done(this.processMessages.bind(this)).fail(this.showError.bind(this));
+            if(!this.is_sending){
+                $.ajax({
+                    url: "/api/messages/list/" + this.user + "/" + this.last_seen_id,
+                    cache: false,
+                    beforeSend: function(){
+                        this.is_sending = true;
+                        this.showMessage("Buscando nuevos mensajes...", 'get');
+                    }.bind(this),
+                    complete: function(xhr, status){
+                        this.is_sending = false;
+                        if(status != "error"){
+                            $("#log .get").html("").css('display', 'none');
+                        }
+                    }.bind(this)
+                }).done(this.processMessages.bind(this)).fail(this.showError.bind(this));
+            }
         };
         Chat.prototype.sendMessage = function () {
             var data = $('form.message').serializeArray();
@@ -85,8 +98,16 @@ $(function() {
                     type: "POST",
                     url: "/api/messages/create",
                     data: message,
-                    beforeSend: function(){this.showLog("Enviando mensaje...");}.bind(this),
-                    complete: this._clearLog
+                    beforeSend: function(){
+                        $("form.message textarea, form.message input").attr('disabled', 'disabled');
+                        this.showMessage("Enviando mensaje...", 'send');
+                    }.bind(this),
+                    complete: function(xhr, status){
+                        $("form.message textarea, form.message input").attr('disabled', false);
+                        if(status != "error"){
+                            $("#log .send").html("").css('display', 'none');
+                        }
+                    }.bind(this)
                 }).done(function(response){
                     this.addMessage(response);
                     $('form.message textarea').val('');
@@ -123,20 +144,13 @@ $(function() {
             }
         };
 
-        Chat.prototype._clearLog = function (xhr, status) {
-            if(status != "error"){
-                $("#log").html("").css('display', 'none');
-            }
-        };
-
-        Chat.prototype.showLog = function (message) {
-            $("#log").html("").css('display', 'block');
-            $("#log").html(message);
+        Chat.prototype.showMessage = function (message, section) {
+            $("#log ." + section).html("").css('display', 'block');
+            $("#log ." + section).html(message);
         };
 
         Chat.prototype.showError = function () {
-            $("#log").html("").css('display', 'block');
-            $("#log").html("Errooooooooooor");
+            this.showMessage("Error :( :(", 'error');
         };
 
         return Chat;
